@@ -1,10 +1,13 @@
 <?php
 /*
 Plugin Name: Blogs Widget
-Description:
-Author: Andrew Billits (Incsub)
-Version: 1.0.1
-Author URI:
+Plugin URI: http://premium.wpmudev.org/project/footer-content
+Description: Show recently updated blogs across your site, with avatars, through this handy widget
+Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
+Version: 1.0.2
+Author URI: http://premium.wpmudev.org
+WDP ID: 64
+Network: true
 */
 
 /* 
@@ -24,6 +27,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+add_action('init', 'widget_blogs_init');
+
+function widget_blogs_init() {
+	if ( !is_multisite() )
+		exit( 'The Widget Blogs plugin is only compatible with WordPress Multisite.' );
+		
+	load_plugin_textdomain('widget_blogs', false, dirname(plugin_basename(__FILE__)).'/languages');
+}
+
 //------------------------------------------------------------------------//
 //---Config---------------------------------------------------------------//
 //------------------------------------------------------------------------//
@@ -35,7 +47,7 @@ $blogs_widget_main_blog_only = 'no'; //Either 'yes' or 'no'
 //------------------------------------------------------------------------//
 //---Functions------------------------------------------------------------//
 //------------------------------------------------------------------------//
-function widget_blogs_init() {
+function widget_blogs_widget_init() {
 	global $wpdb, $blogs_widget_main_blog_only;
 		
 	// Check for the required API functions
@@ -61,18 +73,18 @@ function widget_blogs_init() {
 	?>
 				<div style="text-align:left">
                 
-				<label for="blogs-title" style="line-height:35px;display:block;"><?php _e('Title', 'widgets'); ?>:<br />
+				<label for="blogs-title" style="line-height:35px;display:block;"><?php _e('Title', 'widgets', 'widget_blogs'); ?>:<br />
                 <input class="widefat" id="blogs-title" name="blogs-title" value="<?php echo $options['blogs-title']; ?>" type="text" style="width:95%;">
                 </select>
                 </label>
-				<label for="blogs-display" style="line-height:35px;display:block;"><?php _e('Display', 'widgets'); ?>:
+				<label for="blogs-display" style="line-height:35px;display:block;"><?php _e('Display', 'widgets', 'widget_blogs'); ?>:
                 <select name="blogs-display" id="blogs-display" style="width:95%;">
-                <option value="avatar_blog_name" <?php if ($options['blogs-display'] == 'avatar_blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar + Blog Name'); ?></option>
-                <option value="avatar" <?php if ($options['blogs-display'] == 'avatar'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar Only'); ?></option>
-                <option value="blog_name" <?php if ($options['blogs-display'] == 'blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Blog Name Only'); ?></option>
+                <option value="avatar_blog_name" <?php if ($options['blogs-display'] == 'avatar_blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar + Blog Name', 'widget_blogs'); ?></option>
+                <option value="avatar" <?php if ($options['blogs-display'] == 'avatar'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar Only', 'widget_blogs'); ?></option>
+                <option value="blog_name" <?php if ($options['blogs-display'] == 'blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Blog Name Only', 'widget_blogs'); ?></option>
                 </select>
                 </label>
-				<label for="blogs-blog-name-characters" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widgets'); ?>:<br />
+				<label for="blogs-blog-name-characters" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widgets', 'widget_blogs'); ?>:<br />
                 <select name="blogs-blog-name-characters" id="blogs-blog-name-characters" style="width:95%;">
                 <?php
 					if ( empty($options['blogs-blog-name-characters']) ) {
@@ -87,13 +99,13 @@ function widget_blogs_init() {
                 ?>
                 </select>
                 </label>
-				<label for="blogs-order" style="line-height:35px;display:block;"><?php _e('Order', 'widgets'); ?>:
+				<label for="blogs-order" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
                 <select name="blogs-order" id="blogs-order" style="width:95%;">
-                <option value="most_recent" <?php if ($options['blogs-order'] == 'most_recent'){ echo 'selected="selected"'; } ?> ><?php _e('Most Recent'); ?></option>
-                <option value="random" <?php if ($options['blogs-order'] == 'random'){ echo 'selected="selected"'; } ?> ><?php _e('Random'); ?></option>
+                <option value="most_recent" <?php if ($options['blogs-order'] == 'most_recent'){ echo 'selected="selected"'; } ?> ><?php _e('Most Recent', 'widget_blogs'); ?></option>
+                <option value="random" <?php if ($options['blogs-order'] == 'random'){ echo 'selected="selected"'; } ?> ><?php _e('Random', 'widget_blogs'); ?></option>
                 </select>
                 </label>
-				<label for="blogs-number" style="line-height:35px;display:block;"><?php _e('Number', 'widgets'); ?>:<br />
+				<label for="blogs-number" style="line-height:35px;display:block;"><?php _e('Number', 'widgets', 'widget_blogs'); ?>:<br />
                 <select name="blogs-number" id="blogs-number" style="width:95%;">
                 <?php
 					if ( empty($options['blogs-number']) ) {
@@ -108,13 +120,13 @@ function widget_blogs_init() {
                 ?>
                 </select>
                 </label>
-				<label for="blogs-avatar-size" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widgets'); ?>:<br />
+				<label for="blogs-avatar-size" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widgets', 'widget_blogs'); ?>:<br />
                 <select name="blogs-avatar-size" id="blogs-avatar-size" style="width:95%;">
-                <option value="16" <?php if ($options['blogs-avatar-size'] == '16'){ echo 'selected="selected"'; } ?> ><?php _e('16px'); ?></option>
-                <option value="32" <?php if ($options['blogs-avatar-size'] == '32'){ echo 'selected="selected"'; } ?> ><?php _e('32px'); ?></option>
-                <option value="48" <?php if ($options['blogs-avatar-size'] == '48'){ echo 'selected="selected"'; } ?> ><?php _e('48px'); ?></option>
-                <option value="96" <?php if ($options['blogs-avatar-size'] == '96'){ echo 'selected="selected"'; } ?> ><?php _e('96px'); ?></option>
-                <option value="128" <?php if ($options['blogs-avatar-size'] == '128'){ echo 'selected="selected"'; } ?> ><?php _e('128px'); ?></option>
+                <option value="16" <?php if ($options['blogs-avatar-size'] == '16'){ echo 'selected="selected"'; } ?> ><?php _e('16px', 'widget_blogs'); ?></option>
+                <option value="32" <?php if ($options['blogs-avatar-size'] == '32'){ echo 'selected="selected"'; } ?> ><?php _e('32px', 'widget_blogs'); ?></option>
+                <option value="48" <?php if ($options['blogs-avatar-size'] == '48'){ echo 'selected="selected"'; } ?> ><?php _e('48px', 'widget_blogs'); ?></option>
+                <option value="96" <?php if ($options['blogs-avatar-size'] == '96'){ echo 'selected="selected"'; } ?> ><?php _e('96px', 'widget_blogs'); ?></option>
+                <option value="128" <?php if ($options['blogs-avatar-size'] == '128'){ echo 'selected="selected"'; } ?> ><?php _e('128px', 'widget_blogs'); ?></option>
                 </select>
                 </label>
 				<input type="hidden" name="blogs-submit" id="blogs-submit" value="1" />
@@ -134,7 +146,7 @@ function widget_blogs_init() {
 
 		?>
 		<?php echo $before_widget; ?>
-			<?php echo $before_title . __($options['blogs-title']) . $after_title; ?>
+			<?php echo $before_title . __($options['blogs-title'], 'widget_blogs') . $after_title; ?>
             <br />
             <?php
 
@@ -181,15 +193,23 @@ function widget_blogs_init() {
 	// Tell Dynamic Sidebar about our new widget and its control
 	if ( $blogs_widget_main_blog_only == 'yes' ) {
 		if ( $wpdb->blogid == 1 ) {
-			register_sidebar_widget(array(__('Blogs'), 'widgets'), 'widget_blogs');
-			register_widget_control(array(__('Blogs'), 'widgets'), 'widget_blogs_control');
+			register_sidebar_widget(array(__('Blogs', 'widget_blogs'), 'widgets'), 'widget_blogs');
+			register_widget_control(array(__('Blogs', 'widget_blogs'), 'widgets'), 'widget_blogs_control');
 		}
 	} else {
-		register_sidebar_widget(array(__('Blogs'), 'widgets'), 'widget_blogs');
-		register_widget_control(array(__('Blogs'), 'widgets'), 'widget_blogs_control');
+		register_sidebar_widget(array(__('Blogs', 'widget_blogs'), 'widgets'), 'widget_blogs');
+		register_widget_control(array(__('Blogs', 'widget_blogs'), 'widgets'), 'widget_blogs_control');
 	}
 }
 
-add_action('widgets_init', 'widget_blogs_init');
+add_action('widgets_init', 'widget_blogs_widget_init');
 
-?>
+if ( !function_exists( 'wdp_un_check' ) ) {
+	add_action( 'admin_notices', 'wdp_un_check', 5 );
+	add_action( 'network_admin_notices', 'wdp_un_check', 5 );
+
+	function wdp_un_check() {
+		if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
+			echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
+	}
+}
