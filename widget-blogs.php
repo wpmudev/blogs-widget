@@ -64,13 +64,16 @@ class BlogsWidget extends WP_Widget {
     
     function BlogsWidget() {
 	$widget_ops = array( 'description' => __('Display Blogs Pages', $this->translation_domain) );
-        $control_ops = array( 'title' => __('Blogs', $this->translation_domain),
-		       'display' => 'blog_name', 'blog-name-characters' => 30,
-		       'order' => 'random', 'number' => 10,
-		       'avatar-size' => 16
-		       );
+        $control_ops = array(
+		'title' => __('Blogs', $this->translation_domain),
+		'display' => 'blog_name',
+		'blog-name-characters' => 30,
+		'order' => 'random',
+		'number' => 10,
+		'avatar-size' => 16
+	);
 	
-        $this->WP_Widget( 'blogs_widget', __('Blogs', $this->translation_domain), $widget_ops, $control_ops );
+        $this->WP_Widget('blogs_widget', __('Blogs', $this->translation_domain), $widget_ops, $control_ops );
     }
     
     function widget($args, $instance) {
@@ -81,13 +84,14 @@ class BlogsWidget extends WP_Widget {
 	$defaults = array('count' => 10, 'blogname' => 'wordpress');
 	$options = $instance;
 
-		foreach ( $defaults as $key => $value )
-			if ( !isset($options[$key]) )
-				$options[$key] = $defaults[$key];
-
+	foreach ( $defaults as $key => $value )
+		if ( !isset($options[$key]) )
+			$options[$key] = $defaults[$key];
+				
+		$title = apply_filters('widget_title', $options['title']);
 		?>
 		<?php echo $before_widget; ?>
-			<?php echo $before_title . __($options['title'], 'widget_blogs') . $after_title; ?>
+			<?php echo $before_title . __($title, 'widget_blogs') . $after_title; ?>
             <br />
             <?php
 				//=================================================//
@@ -140,7 +144,6 @@ class BlogsWidget extends WP_Widget {
 	$instance['order'] = $new_instance['order'];
 	$instance['number'] = $new_instance['number'];
 	$instance['avatar-size'] = $new_instance['avatar-size'];
-	
         return $instance;
     }
     
@@ -159,12 +162,12 @@ class BlogsWidget extends WP_Widget {
 	
 	?>
 	<div style="text-align:left">
-		<label for="blogs-title" style="line-height:35px;display:block;"><?php _e('Title', 'widgets', 'widget_blogs'); ?>:<br />
-			<input class="widefat" id="blogs-title" name="title" value="<?php echo $options['title']; ?>" type="text" style="width:95%;" />
+		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widgets', 'widget_blogs'); ?>:<br />
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $options['title']; ?>" type="text" style="width:95%;" />
                 </label>
 		<?php if (function_exists('get_blog_avatar')) { ?>
-			<label for="blogs-isplay" style="line-height:35px;display:block;"><?php _e('Display', 'widgets', 'widget_blogs'); ?>:
-			<select name="display" id="blogs-display" style="width:95%;">
+			<label for="<?php echo $this->get_field_id('display'); ?>" style="line-height:35px;display:block;"><?php _e('Display', 'widgets', 'widget_blogs'); ?>:
+			<select name="<?php echo $this->get_field_name('display'); ?>" id="<?php echo $this->get_field_id('display'); ?>" style="width:95%;">
 				<option value="avatar_blog_name" <?php if ($options['display'] == 'avatar_blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar + Blog Name', 'widget_blogs'); ?></option>
 				<option value="avatar" <?php if ($options['display'] == 'avatar'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar Only', 'widget_blogs'); ?></option>
 				<option value="blog_name" <?php if ($options['display'] == 'blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Blog Name Only', 'widget_blogs'); ?></option>
@@ -173,8 +176,8 @@ class BlogsWidget extends WP_Widget {
 			<input type="hidden" name="display" id="blogs-display" value="blog_name" />
 		<?php } ?>
                 </label>
-		<label for="blogs-blog-name-characters" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widgets', 'widget_blogs'); ?>:<br />
-			<select name="blog-name-characters" id="blogs-blog-name-characters" style="width:95%;">
+		<label for="<?php echo $this->get_field_id('blog-name-characters'); ?>" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widgets', 'widget_blogs'); ?>:<br />
+			<select name="<?php echo $this->get_field_name('blog-name-characters'); ?>" id="<?php echo $this->get_field_id('blog-name-characters'); ?>" style="width:95%;">
 			<?php
 			if ( empty($options['blog-name-characters']) ) {
 				$options['blog-name-characters'] = 30;
@@ -188,14 +191,14 @@ class BlogsWidget extends WP_Widget {
 			?>
 			</select>
                 </label>
-		<label for="blogs-order" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
-			<select name="order" id="blogs-order" style="width:95%;">
+		<label for="<?php echo $this->get_field_id('order'); ?>" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
+			<select name="<?php echo $this->get_field_name('order'); ?>" id="<?php echo $this->get_field_id('order'); ?>" style="width:95%;">
 				<option value="most_recent" <?php if ($options['order'] == 'most_recent'){ echo 'selected="selected"'; } ?> ><?php _e('Most Recent', 'widget_blogs'); ?></option>
 				<option value="random" <?php if ($options['order'] == 'random'){ echo 'selected="selected"'; } ?> ><?php _e('Random', 'widget_blogs'); ?></option>
 			</select>
                 </label>
-		<label for="blogs-number" style="line-height:35px;display:block;"><?php _e('Number', 'widgets', 'widget_blogs'); ?>:<br />
-			<select name="blogs-number" id="number" style="width:95%;">
+		<label for="<?php echo $this->get_field_id('number'); ?>" style="line-height:35px;display:block;"><?php _e('Number', 'widgets', 'widget_blogs'); ?>:<br />
+			<select name="<?php echo $this->get_field_name('number'); ?>" id="<?php echo $this->get_field_id('number'); ?>" style="width:95%;">
 			<?php
 			if ( empty($options['number']) ) {
 				$options['number'] = 10;
@@ -210,8 +213,8 @@ class BlogsWidget extends WP_Widget {
 			</select>
                 </label>
 		<?php if (function_exists('get_blog_avatar')) { ?>
-		<label for="blogs-avatar-size" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widgets', 'widget_blogs'); ?>:<br />
-			<select name="avatar-size" id="blogs-avatar-size" style="width:95%;">
+		<label for="<?php echo $this->get_field_id('avatar-size'); ?>" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widgets', 'widget_blogs'); ?>:<br />
+			<select name="<?php echo $this->get_field_name('avatar-size'); ?>" id="<?php echo $this->get_field_id('avatar-size'); ?>" style="width:95%;">
 			<option value="16" <?php if ($options['avatar-size'] == '16'){ echo 'selected="selected"'; } ?> ><?php _e('16px', 'widget_blogs'); ?></option>
 			<option value="32" <?php if ($options['avatar-size'] == '32'){ echo 'selected="selected"'; } ?> ><?php _e('32px', 'widget_blogs'); ?></option>
 			<option value="48" <?php if ($options['avatar-size'] == '48'){ echo 'selected="selected"'; } ?> ><?php _e('48px', 'widget_blogs'); ?></option>
@@ -220,9 +223,9 @@ class BlogsWidget extends WP_Widget {
 			</select>
 		</label>
 		<?php } else { ?>
-			<input type="hidden" name="avatar-size" id="blogs-avatar-size" value="16" />
+			<input type="hidden" name="<?php echo $this->get_field_name('avatar-size'); ?>" id="<?php echo $this->get_field_id('avatar-size'); ?>" value="16" />
 		<?php } ?>
-		<input type="hidden" name="submit" id="submit" value="1" />
+		<input type="hidden" name="blogs-submit" id="blogs-submit" value="1" />
 	</div>
 	<?php
     }
