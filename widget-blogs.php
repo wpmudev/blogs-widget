@@ -68,6 +68,7 @@ class BlogsWidget extends WP_Widget {
 		'title' => __('Blogs', $this->translation_domain),
 		'display' => 'blog_name',
 		'blog-name-characters' => 30,
+		'public-only' => 'yes',
 		'order' => 'random',
 		'number' => 10,
 		'avatar-size' => 16
@@ -94,11 +95,15 @@ class BlogsWidget extends WP_Widget {
 			<?php echo $before_title . __($title, 'widget_blogs') . $after_title; ?>
             <br />
             <?php
+				$public_where = "";
+				if ($options['public-only'] == 'yes') {
+					$public_where = "AND public = 1";
+				}
 				//=================================================//
 				if ( $options['-order'] == 'most_recent' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' ORDER BY registered DESC LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY registered DESC LIMIT " . $options['number'];
 				} else if ( $options['order'] == 'random' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' ORDER BY RAND() LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY RAND() LIMIT " . $options['number'];
 				}
 				$blogs = $wpdb->get_results( $query, ARRAY_A );
 				if (count($blogs) > 0){
@@ -135,15 +140,17 @@ class BlogsWidget extends WP_Widget {
 	$instance = $old_instance;
         $new_instance = wp_parse_args( (array) $new_instance, array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
-		       'order' => 'random', 'number' => 10,
+		       'public-only' => 'yes', 'order' => 'random', 'number' => 10,
 		       'avatar-size' => 16
 		       ) );
 	$instance['title'] = $new_instance['title'];
 	$instance['display'] = $new_instance['display'];
 	$instance['blog-name-characters'] = $new_instance['blog-name-characters'];
+	$instance['public-only'] = $new_instance['public-only'];
 	$instance['order'] = $new_instance['order'];
 	$instance['number'] = $new_instance['number'];
 	$instance['avatar-size'] = $new_instance['avatar-size'];
+	
         return $instance;
     }
     
@@ -151,12 +158,12 @@ class BlogsWidget extends WP_Widget {
 	$instance = wp_parse_args( (array) $instance,
 		array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
-		       'order' => 'random', 'number' => 10,
+		       'public-only' => 'yes', 'order' => 'random', 'number' => 10,
 		       'avatar-size' => 16
 		       ));
         $options = array('title' => strip_tags($instance['title']), 'display' => $instance['display'],
 			 'blog-name-characters' => $instance['blog-name-characters'],
-			 'order' => $instance['order'],
+			 'public-only' => $instance['public-only'], 'order' => $instance['order'],
 			 'number' => $instance['number'],
 			 'avatar-size' => $instance['avatar-size']);
 	
@@ -189,6 +196,12 @@ class BlogsWidget extends WP_Widget {
                         <?php
 			}
 			?>
+			</select>
+                </label>
+		<label for="<?php echo $this->get_field_id('public-only'); ?>" style="line-height:35px;display:block;"><?php _e('Public Only', 'widgets', 'widget_blogs'); ?>:
+			<select name="<?php echo $this->get_field_name('public-only'); ?>" id="<?php echo $this->get_field_id('public-only'); ?>" style="width:95%;">
+				<option value="yes" <?php if ($options['public-only'] == 'yes'){ echo 'selected="selected"'; } ?> ><?php _e('Yes', 'widget_blogs'); ?></option>
+				<option value="no" <?php if ($options['public-only'] == 'no'){ echo 'selected="selected"'; } ?> ><?php _e('No', 'widget_blogs'); ?></option>
 			</select>
                 </label>
 		<label for="<?php echo $this->get_field_id('order'); ?>" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
