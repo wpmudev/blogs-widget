@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/footer-content
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.5
+Version: 1.0.6
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
@@ -100,7 +100,7 @@ class BlogsWidget extends WP_Widget {
 					$public_where = "AND public = 1";
 				}
 				//=================================================//
-				if ( $options['-order'] == 'most_recent' ) {
+				if ( $options['order'] == 'most_recent' ) {
 					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY registered DESC LIMIT " . $options['number'];
 				} else if ( $options['order'] == 'random' ) {
 					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY RAND() LIMIT " . $options['number'];
