@@ -8,6 +8,7 @@ Version: 1.0.6
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
+Text Domain: widget_blogs
 */
 
 /* 
