@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/footer-content
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.7
+Version: 1.0.8
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
