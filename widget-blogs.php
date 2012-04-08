@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/footer-content
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.6
+Version: 1.0.7
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
@@ -70,6 +70,7 @@ class BlogsWidget extends WP_Widget {
 		'display' => 'blog_name',
 		'blog-name-characters' => 30,
 		'public-only' => 'yes',
+		'templates' => 'no',
 		'order' => 'random',
 		'number' => 10,
 		'avatar-size' => 16
@@ -100,11 +101,22 @@ class BlogsWidget extends WP_Widget {
 				if ($options['public-only'] == 'yes') {
 					$public_where = "AND public = 1";
 				}
+				$template_where = "";
+				if (class_exists( 'blog_templates' ) && $options['templates'] == 'no') {
+					$templates = get_site_option('blog_templates_options');
+					if (isset($templates['templates']) && is_array($templates['templates']) && count($templates['templates']) > 0) {
+						$template_blogs = array();
+						foreach ($templates['templates'] as $template) {
+							$template_blogs[] = $template['blog_id'];
+						}
+						$template_where .= " AND blog_id NOT IN ( " . join(',', $template_blogs). " ) ";
+					}
+				}
 				//=================================================//
 				if ( $options['order'] == 'most_recent' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY registered DESC LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY registered DESC LIMIT " . $options['number'];
 				} else if ( $options['order'] == 'random' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} ORDER BY RAND() LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY RAND() LIMIT " . $options['number'];
 				}
 				$blogs = $wpdb->get_results( $query, ARRAY_A );
 				if (count($blogs) > 0){
@@ -141,13 +153,14 @@ class BlogsWidget extends WP_Widget {
 	$instance = $old_instance;
         $new_instance = wp_parse_args( (array) $new_instance, array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
-		       'public-only' => 'yes', 'order' => 'random', 'number' => 10,
+		       'public-only' => 'yes', 'templates' => 'no', 'order' => 'random', 'number' => 10,
 		       'avatar-size' => 16
 		       ) );
 	$instance['title'] = $new_instance['title'];
 	$instance['display'] = $new_instance['display'];
 	$instance['blog-name-characters'] = $new_instance['blog-name-characters'];
 	$instance['public-only'] = $new_instance['public-only'];
+	$instance['templates'] = $new_instance['templates'];
 	$instance['order'] = $new_instance['order'];
 	$instance['number'] = $new_instance['number'];
 	$instance['avatar-size'] = $new_instance['avatar-size'];
@@ -159,12 +172,13 @@ class BlogsWidget extends WP_Widget {
 	$instance = wp_parse_args( (array) $instance,
 		array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
-		       'public-only' => 'yes', 'order' => 'random', 'number' => 10,
+		       'public-only' => 'yes', 'templates' => 'no', 'order' => 'random', 'number' => 10,
 		       'avatar-size' => 16
 		       ));
         $options = array('title' => strip_tags($instance['title']), 'display' => $instance['display'],
 			 'blog-name-characters' => $instance['blog-name-characters'],
-			 'public-only' => $instance['public-only'], 'order' => $instance['order'],
+			 'public-only' => $instance['public-only'], 'templates' => $instance['templates'],
+			 'order' => $instance['order'],
 			 'number' => $instance['number'],
 			 'avatar-size' => $instance['avatar-size']);
 	
@@ -205,6 +219,14 @@ class BlogsWidget extends WP_Widget {
 				<option value="no" <?php if ($options['public-only'] == 'no'){ echo 'selected="selected"'; } ?> ><?php _e('No', 'widget_blogs'); ?></option>
 			</select>
                 </label>
+		<?php if (class_exists( 'blog_templates' )) { ?>
+		<label for="<?php echo $this->get_field_id('templates'); ?>" style="line-height:35px;display:block;"><?php _e('Include Template Blogs', 'widgets', 'widget_blogs'); ?>:
+			<select name="<?php echo $this->get_field_name('templates'); ?>" id="<?php echo $this->get_field_id('templates'); ?>" style="width:95%;">
+				<option value="yes" <?php if ($options['templates'] == 'yes'){ echo 'selected="selected"'; } ?> ><?php _e('Yes', 'widget_blogs'); ?></option>
+				<option value="no" <?php if ($options['templates'] == 'no'){ echo 'selected="selected"'; } ?> ><?php _e('No', 'widget_blogs'); ?></option>
+			</select>
+                </label>
+		<?php } ?>
 		<label for="<?php echo $this->get_field_id('order'); ?>" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('order'); ?>" id="<?php echo $this->get_field_id('order'); ?>" style="width:95%;">
 				<option value="most_recent" <?php if ($options['order'] == 'most_recent'){ echo 'selected="selected"'; } ?> ><?php _e('Most Recent', 'widget_blogs'); ?></option>
