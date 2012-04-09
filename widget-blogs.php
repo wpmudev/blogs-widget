@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/footer-content
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.8
+Version: 1.0.9
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
@@ -186,7 +186,7 @@ class BlogsWidget extends WP_Widget {
 	<div style="text-align:left">
 		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widget_blogs'); ?>:<br />
 			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $options['title']; ?>" type="text" style="width:95%;" />
-                </label>:
+                </label>
 		<?php if (function_exists('get_blog_avatar')) { ?>
 			<label for="<?php echo $this->get_field_id('display'); ?>" style="line-height:35px;display:block;"><?php _e('Display', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('display'); ?>" id="<?php echo $this->get_field_id('display'); ?>" style="width:95%;">
