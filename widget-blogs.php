@@ -184,11 +184,11 @@ class BlogsWidget extends WP_Widget {
 	
 	?>
 	<div style="text-align:left">
-		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widgets', 'widget_blogs'); ?>:<br />
+		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widget_blogs'); ?>:<br />
 			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $options['title']; ?>" type="text" style="width:95%;" />
-                </label>
+                </label>:
 		<?php if (function_exists('get_blog_avatar')) { ?>
-			<label for="<?php echo $this->get_field_id('display'); ?>" style="line-height:35px;display:block;"><?php _e('Display', 'widgets', 'widget_blogs'); ?>:
+			<label for="<?php echo $this->get_field_id('display'); ?>" style="line-height:35px;display:block;"><?php _e('Display', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('display'); ?>" id="<?php echo $this->get_field_id('display'); ?>" style="width:95%;">
 				<option value="avatar_blog_name" <?php if ($options['display'] == 'avatar_blog_name'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar + Blog Name', 'widget_blogs'); ?></option>
 				<option value="avatar" <?php if ($options['display'] == 'avatar'){ echo 'selected="selected"'; } ?> ><?php _e('Avatar Only', 'widget_blogs'); ?></option>
@@ -198,7 +198,7 @@ class BlogsWidget extends WP_Widget {
 			<input type="hidden" name="display" id="blogs-display" value="blog_name" />
 		<?php } ?>
                 </label>
-		<label for="<?php echo $this->get_field_id('blog-name-characters'); ?>" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widgets', 'widget_blogs'); ?>:<br />
+		<label for="<?php echo $this->get_field_id('blog-name-characters'); ?>" style="line-height:35px;display:block;"><?php _e('Blog Name Characters', 'widget_blogs'); ?>:<br />
 			<select name="<?php echo $this->get_field_name('blog-name-characters'); ?>" id="<?php echo $this->get_field_id('blog-name-characters'); ?>" style="width:95%;">
 			<?php
 			if ( empty($options['blog-name-characters']) ) {
@@ -213,27 +213,27 @@ class BlogsWidget extends WP_Widget {
 			?>
 			</select>
                 </label>
-		<label for="<?php echo $this->get_field_id('public-only'); ?>" style="line-height:35px;display:block;"><?php _e('Public Only', 'widgets', 'widget_blogs'); ?>:
+		<label for="<?php echo $this->get_field_id('public-only'); ?>" style="line-height:35px;display:block;"><?php _e('Public Only', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('public-only'); ?>" id="<?php echo $this->get_field_id('public-only'); ?>" style="width:95%;">
 				<option value="yes" <?php if ($options['public-only'] == 'yes'){ echo 'selected="selected"'; } ?> ><?php _e('Yes', 'widget_blogs'); ?></option>
 				<option value="no" <?php if ($options['public-only'] == 'no'){ echo 'selected="selected"'; } ?> ><?php _e('No', 'widget_blogs'); ?></option>
 			</select>
                 </label>
 		<?php if (class_exists( 'blog_templates' )) { ?>
-		<label for="<?php echo $this->get_field_id('templates'); ?>" style="line-height:35px;display:block;"><?php _e('Include Template Blogs', 'widgets', 'widget_blogs'); ?>:
+		<label for="<?php echo $this->get_field_id('templates'); ?>" style="line-height:35px;display:block;"><?php _e('Include Template Blogs', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('templates'); ?>" id="<?php echo $this->get_field_id('templates'); ?>" style="width:95%;">
 				<option value="yes" <?php if ($options['templates'] == 'yes'){ echo 'selected="selected"'; } ?> ><?php _e('Yes', 'widget_blogs'); ?></option>
 				<option value="no" <?php if ($options['templates'] == 'no'){ echo 'selected="selected"'; } ?> ><?php _e('No', 'widget_blogs'); ?></option>
 			</select>
                 </label>
 		<?php } ?>
-		<label for="<?php echo $this->get_field_id('order'); ?>" style="line-height:35px;display:block;"><?php _e('Order', 'widgets', 'widget_blogs'); ?>:
+		<label for="<?php echo $this->get_field_id('order'); ?>" style="line-height:35px;display:block;"><?php _e('Order', 'widget_blogs'); ?>:
 			<select name="<?php echo $this->get_field_name('order'); ?>" id="<?php echo $this->get_field_id('order'); ?>" style="width:95%;">
 				<option value="most_recent" <?php if ($options['order'] == 'most_recent'){ echo 'selected="selected"'; } ?> ><?php _e('Most Recent', 'widget_blogs'); ?></option>
 				<option value="random" <?php if ($options['order'] == 'random'){ echo 'selected="selected"'; } ?> ><?php _e('Random', 'widget_blogs'); ?></option>
 			</select>
                 </label>
-		<label for="<?php echo $this->get_field_id('number'); ?>" style="line-height:35px;display:block;"><?php _e('Number', 'widgets', 'widget_blogs'); ?>:<br />
+		<label for="<?php echo $this->get_field_id('number'); ?>" style="line-height:35px;display:block;"><?php _e('Number', 'widget_blogs'); ?>:<br />
 			<select name="<?php echo $this->get_field_name('number'); ?>" id="<?php echo $this->get_field_id('number'); ?>" style="width:95%;">
 			<?php
 			if ( empty($options['number']) ) {
@@ -249,7 +249,7 @@ class BlogsWidget extends WP_Widget {
 			</select>
                 </label>
 		<?php if (function_exists('get_blog_avatar')) { ?>
-		<label for="<?php echo $this->get_field_id('avatar-size'); ?>" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widgets', 'widget_blogs'); ?>:<br />
+		<label for="<?php echo $this->get_field_id('avatar-size'); ?>" style="line-height:35px;display:block;"><?php _e('Avatar Size', 'widget_blogs'); ?>:<br />
 			<select name="<?php echo $this->get_field_name('avatar-size'); ?>" id="<?php echo $this->get_field_id('avatar-size'); ?>" style="width:95%;">
 			<option value="16" <?php if ($options['avatar-size'] == '16'){ echo 'selected="selected"'; } ?> ><?php _e('16px', 'widget_blogs'); ?></option>
 			<option value="32" <?php if ($options['avatar-size'] == '32'){ echo 'selected="selected"'; } ?> ><?php _e('32px', 'widget_blogs'); ?></option>
