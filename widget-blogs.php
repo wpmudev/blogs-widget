@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/blogs-widget
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.9.1
+Version: 1.0.9.2
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
@@ -94,7 +94,7 @@ class BlogsWidget extends WP_Widget {
 		$title = apply_filters('widget_title', $options['title']);
 		?>
 		<?php echo $before_widget; ?>
-			<?php echo $before_title . __($title, 'widget_blogs') . $after_title; ?>
+			<?php echo $before_title . __(esc_html($title), 'widget_blogs') . $after_title; ?>
             <br />
             <?php
 				$public_where = "";
@@ -107,18 +107,18 @@ class BlogsWidget extends WP_Widget {
 					if (isset($templates['templates']) && is_array($templates['templates']) && count($templates['templates']) > 0) {
 						$template_blogs = array();
 						foreach ($templates['templates'] as $template) {
-							$template_blogs[] = $template['blog_id'];
+							$template_blogs[] = (int) $template['blog_id'];
 						}
 						$template_where .= " AND blog_id NOT IN ( " . join(',', $template_blogs). " ) ";
 					}
 				}
 				//=================================================//
 				if ( $options['order'] == 'most_recent' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY registered DESC LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY registered DESC LIMIT %d ";
 				} else if ( $options['order'] == 'random' ) {
-					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY RAND() LIMIT " . $options['number'];
+					$query = "SELECT blog_id FROM " . $wpdb->base_prefix . "blogs WHERE site_id = '" . $wpdb->siteid . "' AND spam != '1' AND archived != '1' AND deleted != '1' {$public_where} {$template_where} ORDER BY RAND() LIMIT %d ";
 				}
-				$blogs = $wpdb->get_results( $query, ARRAY_A );
+				$blogs = $wpdb->get_results( $wpdb->prepare($query, $options['number']), ARRAY_A );
 				if (count($blogs) > 0){
 					if ( $options['display'] == 'blog_name' || $options['display'] == 'avatar_blog_name' ) {
 						echo '<ul>';
@@ -185,7 +185,7 @@ class BlogsWidget extends WP_Widget {
 	?>
 	<div style="text-align:left">
 		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widget_blogs'); ?>:<br />
-			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $options['title']; ?>" type="text" style="width:95%;" />
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo esc_attr($options['title']); ?>" type="text" style="width:95%;" />
                 </label>
 		<?php if (function_exists('get_blog_avatar')) { ?>
 			<label for="<?php echo $this->get_field_id('display'); ?>" style="line-height:35px;display:block;"><?php _e('Display', 'widget_blogs'); ?>:
