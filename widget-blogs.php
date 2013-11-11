@@ -4,7 +4,7 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/blogs-widget
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.9.2
+Version: 1.0.9.3
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
@@ -103,12 +103,8 @@ class BlogsWidget extends WP_Widget {
 				}
 				$template_where = "";
 				if (class_exists( 'blog_templates' ) && $options['templates'] == 'no') {
-					$templates = get_site_option('blog_templates_options');
-					if (isset($templates['templates']) && is_array($templates['templates']) && count($templates['templates']) > 0) {
-						$template_blogs = array();
-						foreach ($templates['templates'] as $template) {
-							$template_blogs[] = (int) $template['blog_id'];
-						}
+					$template_blogs = $wpdb->get_col($wpdb->prepare("SELECT * FROM {$wpdb->base_prefix}nbt_templates WHERE network_id = %d", $wpdb->siteid));
+					if ($template_blogs && is_array($template_blogs) && count($template_blogs) > 0) {
 						$template_where .= " AND blog_id NOT IN ( " . join(',', $template_blogs). " ) ";
 					}
 				}
