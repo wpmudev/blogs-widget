@@ -4,14 +4,14 @@ Plugin Name: Blogs Widget
 Plugin URI: http://premium.wpmudev.org/project/blogs-widget
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
 Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
-Version: 1.0.9.3
+Version: 1.0.9.4
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
 Network: true
 Text Domain: widget_blogs
 */
 
-/* 
+/*
 Copyright 2007-2009 Incsub (http://incsub.com)
 
 This program is free software; you can redistribute it and/or modify
@@ -49,20 +49,20 @@ $blogs_widget_main_blog_only = 'no'; //Either 'yes' or 'no'
 //------------------------------------------------------------------------//
 function widget_blogs_widget_init() {
 	global $wpdb, $blogs_widget_main_blog_only;
-	
+
 	// Check for the required API functions
 	if ( !function_exists('register_widget') )
 		return;
-	
+
 	register_widget('BlogsWidget');
 }
 
 add_action('widgets_init', 'widget_blogs_widget_init');
 
 class BlogsWidget extends WP_Widget {
-    
+
     var $translation_domain = 'widget_blogs';
-    
+
     function BlogsWidget() {
 	$widget_ops = array( 'description' => __('Display Blogs Pages', $this->translation_domain) );
         $control_ops = array(
@@ -75,22 +75,22 @@ class BlogsWidget extends WP_Widget {
 		'number' => 10,
 		'avatar-size' => 16
 	);
-	
+
         $this->WP_Widget('blogs_widget', __('Blogs', $this->translation_domain), $widget_ops, $control_ops );
     }
-    
+
     function widget($args, $instance) {
 	global $wpdb, $current_site, $post, $blogs_tree;
-	
+
 	extract($args);
-	
+
 	$defaults = array('count' => 10, 'blogname' => 'wordpress');
 	$options = $instance;
 
 	foreach ( $defaults as $key => $value )
 		if ( !isset($options[$key]) )
 			$options[$key] = $defaults[$key];
-				
+
 		$title = apply_filters('widget_title', $options['title']);
 		?>
 		<?php echo $before_widget; ?>
@@ -144,7 +144,7 @@ class BlogsWidget extends WP_Widget {
 		<?php echo $after_widget; ?>
 	<?php
     }
-    
+
     function update($new_instance, $old_instance) {
 	$instance = $old_instance;
         $new_instance = wp_parse_args( (array) $new_instance, array( 'title' => __('Blogs', $this->translation_domain),
@@ -160,10 +160,10 @@ class BlogsWidget extends WP_Widget {
 	$instance['order'] = $new_instance['order'];
 	$instance['number'] = $new_instance['number'];
 	$instance['avatar-size'] = $new_instance['avatar-size'];
-	
+
         return $instance;
     }
-    
+
     function form($instance) {
 	$instance = wp_parse_args( (array) $instance,
 		array( 'title' => __('Blogs', $this->translation_domain),
@@ -177,7 +177,7 @@ class BlogsWidget extends WP_Widget {
 			 'order' => $instance['order'],
 			 'number' => $instance['number'],
 			 'avatar-size' => $instance['avatar-size']);
-	
+
 	?>
 	<div style="text-align:left">
 		<label for="<?php echo $this->get_field_id('title'); ?>" style="line-height:35px;display:block;"><?php _e('Title', 'widget_blogs'); ?>:<br />
@@ -261,14 +261,4 @@ class BlogsWidget extends WP_Widget {
 	</div>
 	<?php
     }
-}
-
-if ( !function_exists( 'wdp_un_check' ) ) {
-	add_action( 'admin_notices', 'wdp_un_check', 5 );
-	add_action( 'network_admin_notices', 'wdp_un_check', 5 );
-
-	function wdp_un_check() {
-		if ( !class_exists( 'WPMUDEV_Update_Notifications' ) && current_user_can( 'edit_users' ) )
-			echo '<div class="error fade"><p>' . __('Please install the latest version of <a href="http://premium.wpmudev.org/project/update-notifications/" title="Download Now &raquo;">our free Update Notifications plugin</a> which helps you stay up-to-date with the most stable, secure versions of WPMU DEV themes and plugins. <a href="http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/">More information &raquo;</a>', 'wpmudev') . '</a></p></div>';
-	}
 }
