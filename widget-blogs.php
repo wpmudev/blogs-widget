@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Blogs Widget
-Plugin URI: http://premium.wpmudev.org/project/blogs-widget
+Plugin URI: http://premium.wpmudev.org/project/blogs-widget/
 Description: Show recently updated blogs across your site, with avatars, through this handy widget
-Author: S H Mohanjith (Incsub), Andrew Billits (Incsub)
+Author: WPMU DEV
 Version: 1.0.9.4
 Author URI: http://premium.wpmudev.org
 WDP ID: 64
@@ -12,7 +12,9 @@ Text Domain: widget_blogs
 */
 
 /*
-Copyright 2007-2009 Incsub (http://incsub.com)
+Copyright 2009-2014 Incsub (http://incsub.com)
+Author - S H Mohanjith
+Contributors - Andrew Billits
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
