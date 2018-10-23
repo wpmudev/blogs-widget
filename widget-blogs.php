@@ -65,7 +65,7 @@ class BlogsWidget extends WP_Widget {
 
     var $translation_domain = 'widget_blogs';
 
-    function BlogsWidget() {
+    public function __construct() {
 	$widget_ops = array( 'description' => __('Display Blogs Pages', $this->translation_domain) );
         $control_ops = array(
 		'title' => __('Blogs', $this->translation_domain),
@@ -78,10 +78,10 @@ class BlogsWidget extends WP_Widget {
 		'avatar-size' => 16
 	);
 
-        $this->WP_Widget('blogs_widget', __('Blogs', $this->translation_domain), $widget_ops, $control_ops );
+        parent::__construct('blogs_widget', __('Blogs', $this->translation_domain), $widget_ops, $control_ops );
     }
 
-    function widget($args, $instance) {
+    public function widget($args, $instance) {
 	global $wpdb, $current_site, $post, $blogs_tree;
 
 	extract($args);
@@ -147,7 +147,7 @@ class BlogsWidget extends WP_Widget {
 	<?php
     }
 
-    function update($new_instance, $old_instance) {
+    public function update($new_instance, $old_instance) {
 	$instance = $old_instance;
         $new_instance = wp_parse_args( (array) $new_instance, array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
@@ -166,7 +166,7 @@ class BlogsWidget extends WP_Widget {
         return $instance;
     }
 
-    function form($instance) {
+    public function form($instance) {
 	$instance = wp_parse_args( (array) $instance,
 		array( 'title' => __('Blogs', $this->translation_domain),
 		       'display' => 'blog_name', 'blog-name-characters' => 30,
